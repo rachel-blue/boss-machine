@@ -48,4 +48,42 @@ minionsRouter.delete('/minionId', (req, res, next) => {
   }
 });
 
+// Allows boss to add/remove work from backlogs
+let work = [];
+seedMinions(work, 'work');
+
+minionsRouter.get('/:minionId/work/:wordId', (req, res, next) => {
+  res.send(work);
+});
+
+minionsRouter.post('/:minionId/work', (req, res, next) => {
+  const receivedWork = createElement('work', req.query);
+  if (receivedWork) {
+    work.push(receivedWork);
+    res.status(201).send(receivedWork);
+  } else {
+    res.status(400).send();
+  }
+});
+
+minionsRouter.put('/:minionId/work/:wordId', (req, res, next) => {
+  const workIndex = getIndexById(req.params.id, work);
+  if (workIndex !== -1) {
+    updateElement(req.params.id, req.query, work);
+    res.send(work[workIndex]);
+  } else {
+    res.status(404).send();
+  }
+});
+
+minionsRouter.delete('/:minionId/work/:wordId', (req, res, next) => {
+  const workIndex = getIndexById(req.params.id, work);
+  if (workIndex !== -1) {
+    work.splice(workIndex, 1);
+    res.status(204).send();
+  } else {
+    res.status(404).send();
+  }
+});
+
 module.exports = minionsRouter;
