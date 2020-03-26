@@ -2,13 +2,12 @@
 // are still worth at least one million dollars!
 // The total value of an idea is the product of its numWeeks and weeklyRevenue properties.
 const checkMillionDollarIdea = (req, res, next) => {
-  const numWeeks = req.params.numWeeks;
-  const weeklyRevenue = req.params.weeklyRevenue;
-  const ideaValue = numWeeks + weeklyRevenue;
-  if (ideaValue >= 1000000) {
-    next();
+  const { numWeeks, weeklyRevenue } = req.body;
+  const ideaValue = Number(numWeeks) * Number(weeklyRevenue);
+  if (!numWeeks || !weeklyRevenue || isNaN(ideaValue) || ideaValue < 1000000) {
+    res.status(400).send();
   } else {
-    res.status(400).send('This is not a million dollar idea');
+    next();
   }
 };
 
